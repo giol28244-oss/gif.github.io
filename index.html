@@ -2,51 +2,67 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Fish Admin Panel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Panel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            margin: 0;
             background: #0f0f0f;
             color: white;
             font-family: Arial;
-        }
-        .box {
-            padding: 20px;
+            margin: 0;
+            padding: 15px;
         }
         .card {
-            background: #1f1f1f;
-            padding: 15px;
+            background: #1c1c1c;
+            padding: 12px;
             border-radius: 10px;
             margin-bottom: 10px;
         }
         button {
-            width: 100%;
+            width: 48%;
             padding: 10px;
             border: none;
-            background: #ff8800;
-            color: black;
+            border-radius: 6px;
             font-weight: bold;
-            border-radius: 8px;
         }
+        .ok { background: #22c55e; }
+        .bad { background: #ef4444; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>🐟 Fish Panel</h2>
+<h2>🐟 Fish Moderator</h2>
 
-    <div class="card">
-        <b>Панель работает</b><br>
-        Mini App подключён ✅
-    </div>
-
-    <button onclick="Telegram.WebApp.close()">Закрыть</button>
-</div>
+<div id="list"></div>
 
 <script>
-    Telegram.WebApp.ready();
+const tg = Telegram.WebApp;
+tg.ready();
+
+fetch("https://YOUR-SERVER/get_requests")
+.then(r => r.json())
+.then(data => {
+    const box = document.getElementById("list");
+    data.forEach(item => {
+        box.innerHTML += 
+        <div class="card">
+            <b>#${item.id}</b><br>
+            ${item.desc}<br><br>
+            <button class="ok" onclick="accept(${item.id})">Принять</button>
+            <button class="bad" onclick="reject(${item.id})">Отклонить</button>
+        </div>;
+    });
+});
+
+function accept(id){
+    fetch(/accept/${id});
+    alert("Принято");
+}
+
+function reject(id){
+    fetch(/reject/${id});
+    alert("Отклонено");
+}
 </script>
 
 </body>
